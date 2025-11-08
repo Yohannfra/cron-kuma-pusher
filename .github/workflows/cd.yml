@@ -1,0 +1,62 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+
+jobs:
+  release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.25.3'
+
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          git fetch --tags
+          latest=$(git tag --sort=-v:refname | head -n 1)
+          echo "latest_tag=${latest:-v0.0.0}" >> $GITHUB_ENV
+
+      - name: Bump version
+        id: bump_version
+        run: |
+          old=${latest_tag:-v0.0.0}
+          IFS='.' read -r major minor patch <<< "${old#v}"
+          patch=$((patch + 1))
+          new="v$major.$minor.$patch"
+          echo "new_tag=$new" >> $GITHUB_ENV
+          echo "New tag: $new"
+
+      - name: Build binaries
+        run: |
+          mkdir -p dist
+          GOOS=linux GOARCH=amd64 go build -o dist/cron-kuma-pusher-linux-amd64
+          GOOS=darwin GOARCH=amd64 go build -o dist/cron-kuma-pusher-darwin-amd64
+          GOOS=windows GOARCH=amd64 go build -o dist/cron-kuma-pusher-windows-amd64.exe
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.new_tag }}
+          name: "Release ${{ env.new_tag }}"
+          body: |
+            🚀 **Cron Kuma Pusher ${{ env.new_tag }}**
+
+            - Auto-generated build from main branch
+            - Includes binaries for Linux, macOS, and Windows
+
+          files: |
+            dist/cron-kuma-pusher-*
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
