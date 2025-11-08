@@ -40,6 +40,7 @@ jobs:
           mkdir -p dist
           GOOS=linux GOARCH=amd64 go build -o dist/cron-kuma-pusher-linux-amd64
           GOOS=darwin GOARCH=amd64 go build -o dist/cron-kuma-pusher-darwin-amd64
+          GOOS=darwin GOARCH=arm64 go build -o dist/cron-kuma-pusher-darwin-arm64
           GOOS=windows GOARCH=amd64 go build -o dist/cron-kuma-pusher-windows-amd64.exe
 
       - name: Create GitHub Release
@@ -50,7 +51,7 @@ jobs:
           body: |
             🚀 **Cron Kuma Pusher ${{ env.new_tag }}**
 
-            - Auto-generated build from main branch
+            - Auto-generated build from master branch
             - Includes binaries for Linux, macOS, and Windows
 
           files: |
