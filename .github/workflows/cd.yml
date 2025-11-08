@@ -1,19 +1,17 @@
 name: CD
 
 on:
-  workflow_run:
-    workflows: ["CI"]
-    types:
-      - completed
+  push:
+    branches: [ "master" ]
 
 jobs:
   release:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Allow creating releases and tags
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
       - name: Set up Go
         uses: actions/setup-go@v6
@@ -57,6 +55,5 @@ jobs:
 
           files: |
             dist/cron-kuma-pusher-*
-
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
