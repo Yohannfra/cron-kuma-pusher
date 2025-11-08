@@ -1,8 +1,9 @@
 package config
 
 import (
-	"github.com/spf13/viper"
 	"log"
+
+	"github.com/spf13/viper"
 )
 
 type Job struct {
@@ -31,17 +32,16 @@ func validateConfig(c *Configuration) {
 	}
 }
 
-func Init() {
+func Init(configPath string) {
 	v := viper.New()
 	v.SetConfigType("yaml")
-	v.SetConfigName("config")
-	v.AddConfigPath(".")
+	v.SetConfigFile(configPath)
 
 	v.SetDefault("jobs", []Job{})
 
 	if err := v.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			log.Fatalf("Error: Config file not found. Make sure config.json is in the current directory. %v", err)
+			log.Fatalf("Error: Config file not found at %s. %v", configPath, err)
 		} else {
 			log.Fatalf("Fatal error reading config file: %v", err)
 		}

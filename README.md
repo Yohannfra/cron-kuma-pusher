@@ -8,7 +8,7 @@ Ideal for self-hosted environments, it bridges the gap between your scheduled ta
 
 ## Features
 
-- Parse and execute jobs from a simple `config.yml`
+- Parse and execute jobs from a simple config **YAML** file
 - Schedule jobs using standard cron expressions
 - Send execution results directly to **Uptime Kuma** push monitors
 - Minimal setup — one binary, one config file
@@ -18,16 +18,16 @@ Ideal for self-hosted environments, it bridges the gap between your scheduled ta
 
 ## Installation
 
-Download the latest binary from the [GitHub Releases](https://github.com/Yohannfra/cron-kuma-pusher/releases) page and install it using `curl`:
+Download the latest binary from the [GitHub Releases](https://github.com/Yohannfra/cron-kuma-pusher/releases) using `curl`:
 
 ```bash
 # darwin-amd64 and windows-amd64 are also available on the release page
 
 # linux-amd64
-curl -L https://github.com/Yohannfra/cron-kuma-pusher/releases/download/v0.0.2/cron-kuma-pusher-linux-amd64 -o /usr/local/bin/cron-kuma-pusher
+curl -L https://github.com/Yohannfra/cron-kuma-pusher/releases/download/v0.0.3/cron-kuma-pusher-linux-amd64 -o /usr/local/bin/cron-kuma-pusher
 
 # darwin-arm64
-curl -L https://github.com/Yohannfra/cron-kuma-pusher/releases/download/v0.0.2/cron-kuma-pusher-darwin-arm64 -o /usr/local/bin/cron-kuma-pusher
+curl -L https://github.com/Yohannfra/cron-kuma-pusher/releases/download/v0.0.3/cron-kuma-pusher-darwin-arm64 -o /usr/local/bin/cron-kuma-pusher
 
 chmod +x /usr/local/bin/cron-kuma-pusher
 ```
@@ -63,7 +63,7 @@ chmod +x /usr/local/bin/cron-kuma-pusher
 3. **Run the program**
 
    ```bash
-   cron-kuma-pusher -config config.yml
+   cron-kuma-pusher --config config.yml
    ```
 ---
 
