@@ -67,6 +67,67 @@ chmod +x /usr/local/bin/cron-kuma-pusher
    ```
 ---
 
-## 🪪 License
+## Running as a Systemd Service (Linux)
+
+To keep **Cron Kuma Pusher** running in the background and automatically restart on reboot or crash, you can configure it as a `systemd` service.
+
+1. **Create a systemd unit file**
+
+```bash
+$ sudo nano /etc/systemd/system/cron-kuma-pusher.service
+```
+
+Paste the following content (adjust it as needed):
+
+```ini
+[Unit]
+Description=Cron Kuma Pusher Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/cron-kuma-pusher --config /etc/cron-kuma-pusher/config.yml
+WorkingDirectory=/etc/cron-kuma-pusher
+Restart=always
+RestartSec=10
+User=ubuntu
+Group=ubuntu
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+```
+
+2. Create the config directory
+
+```bash
+$ sudo mkdir -p /etc/cron-kuma-pusher
+$ sudo cp config.yml /etc/cron-kuma-pusher/
+```
+
+3. Reload and enable the service
+
+```bash
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable cron-kuma-pusher
+$ sudo systemctl start cron-kuma-pusher
+```
+
+4. Check the status
+
+```bash
+$ systemctl status cron-kuma-pusher
+```
+
+5. View logs (optional)
+
+```bash
+journalctl -u cron-kuma-pusher -f
+```
+
+---
+
+## License
 
 This project is licensed under the **MIT License**, matching the license of [Uptime Kuma](https://github.com/louislam/uptime-kuma).
