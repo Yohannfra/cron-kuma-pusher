@@ -17,7 +17,7 @@ func main() {
 		log.Fatal("Error: --config flag is required. Please specify the path to your configuration file.")
 	}
 
-	c := cron.New()
+	c := cron.New(cron.WithSeconds())
 
 	config.Init(*configPath)
 	cfg := config.GetConfig()

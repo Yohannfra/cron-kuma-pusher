@@ -50,7 +50,7 @@ chmod +x /usr/local/bin/cron-kuma-pusher
 
    jobs:
      - name: example job
-       expression: "*/1 * * * *"
+       expression: "0 * * * * *" # every minute
        command: "du -h"
        pushToken: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
    ```
