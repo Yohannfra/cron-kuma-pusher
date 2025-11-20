@@ -10,14 +10,19 @@ import (
 	"github.com/yohannfra/cron-kuma-pusher/config"
 )
 
-func AppendLog(fp, stdout, stderr string, exitCode int) error {
+func AppendLog(fp, stdout, stderr string, exitCode int) {
 	cfg := config.GetConfig()
 
 	f, err := os.OpenFile(path.Join(cfg.Logs.Dir, fp+".log"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Printf("error opening file: %v", err)
 	}
-	defer f.Close()
+
+	defer func() {
+		if err := f.Close(); err != nil {
+			log.Printf("error closing file: %v", err)
+		}
+	}()
 
 	timestamp := time.Now().Format("2006-01-02 15:04:05")
 
@@ -30,5 +35,8 @@ func AppendLog(fp, stdout, stderr string, exitCode int) error {
 	)
 
 	_, err = f.WriteString(entry + "\n")
-	return err
+
+	if err != nil {
+		log.Printf("Failed to write to file: %v", err.Error())
+	}
 }
