@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/joho/godotenv"
 	"github.com/robfig/cron/v3"
 	"github.com/yohannfra/cron-kuma-pusher/config"
 	"github.com/yohannfra/cron-kuma-pusher/exec"
@@ -27,10 +28,24 @@ func pushResultToKuma(pushToken, message string, exitCode int) {
 func CreateJob(c *cron.Cron, job *config.Job) {
 	config := config.GetConfig()
 
+	if job.EnvFile != "" {
+		var loadedEnv map[string]string
+		loadedEnv, err := godotenv.Read(job.EnvFile)
+
+		if err != nil {
+			log.Fatalf("Failed to load env file for job '%s'", job.Name)
+		}
+
+		log.Printf("Loaded env file %s: %v", job.EnvFile, loadedEnv)
+
+		job.Env = utils.MergeMaps(job.Env, loadedEnv)
+		log.Printf("Merged env for job %s: %v", job.Name, job.Env)
+	}
+
 	log.Printf("Creating job '%s'", job.Name)
 
 	_, err := c.AddFunc(job.Expression, func() {
-		stdout, stderr, exitCode, err := exec.Exec(job.Workdir, job.Command)
+		stdout, stderr, exitCode, err := exec.Exec(job.Workdir, job.Env, job.Command)
 
 		if err != nil {
 			log.Printf("Error: failed to run command: %v\n", err)

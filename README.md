@@ -62,6 +62,7 @@ chmod +x /usr/local/bin/cron-kuma-pusher
      - name: example job
        expression: "0 * * * * *" # every minute in quartz format
        workDir: "/home/me"
+       envFile: ".env"
        command: "du -h"
        pushToken: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
    ```
@@ -77,6 +78,7 @@ chmod +x /usr/local/bin/cron-kuma-pusher
      - `name`: A descriptive name for the job.
      - `expression`: Cron schedule expression.
      - `workDir`: The directory in which to execute the command.
+     - `envFile`: Env variables to add to process (load them from a dotenv compatible file).
      - `command`: The shell command to execute.
      - `pushToken`: Your Kuma push token for this specific job.
 

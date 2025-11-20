@@ -1,3 +1,4 @@
 cron-kuma-pusher
+test-env.txt
 *.yml
 logs
