@@ -14,7 +14,7 @@ func pushResultToKuma(pushToken, message string, exitCode int) {
 	config := config.GetConfig()
 
 	// "<KumaBaseUrl>/<token>?status=up&msg=OK"
-	pushUrl := config.KumaBaseUrl + "/" + pushToken + "?" +
+	pushUrl := config.UptimeKuma.BaseUrl + "/" + pushToken + "?" +
 		"status=" + utils.Ternary(exitCode == 0, "up", "down") +
 		"&msg=" + message
 
@@ -34,7 +34,9 @@ func CreateJob(c *cron.Cron, job *config.Job) {
 
 		if err != nil {
 			log.Printf("Error: failed to run command: %v\n", err)
-			pushResultToKuma(job.PushToken, "Error: failed to run command", -1)
+			if config.UptimeKuma.Enabled {
+				pushResultToKuma(job.PushToken, "Error: failed to run command", -1)
+			}
 			return
 		}
 
@@ -44,7 +46,9 @@ func CreateJob(c *cron.Cron, job *config.Job) {
 
 		if exitCode == 0 {
 			log.Printf("Job '%s' ran successfully", job.Name)
-			pushResultToKuma(job.PushToken, "OK", 0)
+			if config.UptimeKuma.Enabled {
+				pushResultToKuma(job.PushToken, "OK", 0)
+			}
 		} else {
 			log.Printf("\n==== Job '%s' failed ====", job.Name)
 			log.Printf("Command: %s\n", job.Command)
@@ -52,7 +56,9 @@ func CreateJob(c *cron.Cron, job *config.Job) {
 			log.Printf("Stdout:\n%s\n", stdout)
 			log.Printf("Stderr:\n%s\n", stderr)
 			log.Print("========================================\n\n")
-			pushResultToKuma(job.PushToken, "KO", exitCode)
+			if config.UptimeKuma.Enabled {
+				pushResultToKuma(job.PushToken, "KO", exitCode)
+			}
 		}
 	})
 

@@ -46,7 +46,9 @@ chmod +x /usr/local/bin/cron-kuma-pusher
    Save the following as `config.yml`:
 
    ```yaml
-   kumaBaseUrl: 'https://uptime.yourdomain.com/api/push/'
+   uptimeKuma:
+     enabled: true
+     baseUrl: 'https://uptime.yourdomain.com/api/push/'
 
    logs:
      enabled: true

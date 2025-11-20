@@ -6,6 +6,11 @@ import (
 	"github.com/spf13/viper"
 )
 
+type UptimeKumaConfig struct {
+	Enabled bool
+	BaseUrl string
+}
+
 type LogsConfig struct {
 	Enabled bool
 	Dir     string
@@ -19,9 +24,9 @@ type Job struct {
 }
 
 type Configuration struct {
-	Jobs        []Job
-	KumaBaseUrl string
-	Logs        LogsConfig
+	Jobs       []Job
+	UptimeKuma UptimeKumaConfig
+	Logs       LogsConfig
 }
 
 var c *Configuration
@@ -33,8 +38,10 @@ func validateConfig(c *Configuration) {
 	}
 
 	// Check if the KumaBaseUrl is present and valid
-	if c.KumaBaseUrl == "" {
-		log.Fatal("Error: KumaBaseUrl is not set.")
+	if c.UptimeKuma.Enabled {
+		if c.UptimeKuma.BaseUrl == "" {
+			log.Fatal("Error: KumaBaseUrl is not set.")
+		}
 	}
 
 	// Check if the LogsDir is present and set it's default value if not
@@ -68,11 +75,19 @@ func Init(configPath string) {
 
 	validateConfig(c)
 
-	log.Printf("Uptime Kuma base url is %s", c.KumaBaseUrl)
+	// Uptime Kuma
+	log.Printf("Uptime Kuma enabled is %v", c.UptimeKuma.Enabled)
+	if c.UptimeKuma.Enabled {
+		log.Printf("Uptime Kuma base url is %s", c.UptimeKuma.BaseUrl)
+	}
+
+	// Logs
 	log.Printf("Logs enabled is %v", c.Logs.Enabled)
 	if c.Logs.Enabled {
 		log.Printf("Logs dir is %s", c.Logs.Dir)
 	}
+
+	// Jobs
 	log.Printf("Loaded %d jobs from configuration", len(c.Jobs))
 	for _, job := range c.Jobs {
 		log.Println("--------------------------------")
