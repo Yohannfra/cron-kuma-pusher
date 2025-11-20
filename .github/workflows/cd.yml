@@ -51,7 +51,7 @@ jobs:
           body: |
             🚀 **Cron Kuma Pusher ${{ env.new_tag }}**
 
-            - Auto-generated build from master branch
+            - Auto-generated build from release branch
             - Includes binaries for Linux, macOS, and Windows
 
           files: |
