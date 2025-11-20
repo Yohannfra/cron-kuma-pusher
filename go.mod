@@ -1,8 +1,6 @@
 module github.com/yohannfra/cron-kuma-pusher
 
-go 1.23.0
-
-toolchain go1.24.10
+go 1.24.10
 
 require (
 	github.com/robfig/cron/v3 v3.0.0
