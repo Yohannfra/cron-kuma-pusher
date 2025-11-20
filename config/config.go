@@ -6,6 +6,17 @@ import (
 	"github.com/spf13/viper"
 )
 
+type CronFormat string
+
+const (
+	FormatStandard CronFormat = "standard"
+	FormatQuartz   CronFormat = "quartz"
+)
+
+type CronConfig struct {
+	Format CronFormat
+}
+
 type UptimeKumaConfig struct {
 	Enabled bool
 	BaseUrl string
@@ -24,17 +35,38 @@ type Job struct {
 }
 
 type Configuration struct {
-	Jobs       []Job
+	Cron       CronConfig
 	UptimeKuma UptimeKumaConfig
 	Logs       LogsConfig
+	Jobs       []Job
 }
 
 var c *Configuration
 
 func validateConfig(c *Configuration) {
-	// Check if there is at least one pinger
+	// Check the cron config
+	if c.Cron.Format != FormatStandard && c.Cron.Format != FormatQuartz {
+		// if it's not defined set it to standard by default
+		if c.Cron.Format == "" {
+			c.Cron.Format = FormatStandard
+		} else {
+			log.Fatalf("Invalid cron format '%s'", c.Cron.Format)
+		}
+	}
+
+	// Check if there is at least one job
 	if len(c.Jobs) == 0 {
 		log.Fatalf("Error: No jobs found in configuration")
+	}
+
+	// check if there is a duplicated name in jobs
+	names := make(map[string]int)
+
+	for _, job := range c.Jobs {
+		names[job.Name]++
+		if names[job.Name] > 1 {
+			log.Fatalf("Found multiple jobs with name '%s'", job.Name)
+		}
 	}
 
 	// Check if the KumaBaseUrl is present and valid
@@ -75,27 +107,34 @@ func Init(configPath string) {
 
 	validateConfig(c)
 
+	// Cron config
+	log.Println("Cron config:")
+	log.Printf("- Format: %s", c.Cron.Format)
+
 	// Uptime Kuma
-	log.Printf("Uptime Kuma enabled is %v", c.UptimeKuma.Enabled)
+	log.Println("Uptime Kuma config:")
+	log.Printf("- Enabled: %v", c.UptimeKuma.Enabled)
 	if c.UptimeKuma.Enabled {
-		log.Printf("Uptime Kuma base url is %s", c.UptimeKuma.BaseUrl)
+		log.Printf("- Base url: %s", c.UptimeKuma.BaseUrl)
 	}
 
 	// Logs
-	log.Printf("Logs enabled is %v", c.Logs.Enabled)
+	log.Println("Logs config:")
+	log.Printf("- Enabled: %v", c.Logs.Enabled)
 	if c.Logs.Enabled {
-		log.Printf("Logs dir is %s", c.Logs.Dir)
+		log.Printf("- Directory %s", c.Logs.Dir)
 	}
 
 	// Jobs
-	log.Printf("Loaded %d jobs from configuration", len(c.Jobs))
+	log.Println("Jobs:")
+	log.Printf("- Count %d", len(c.Jobs))
 	for _, job := range c.Jobs {
-		log.Println("--------------------------------")
-		log.Printf("Name: %s", job.Name)
-		log.Printf("Expression: %s", job.Expression)
-		log.Printf("Command: %s", job.Command)
-		log.Printf("Push token: %s", job.PushToken)
-		log.Print("--------------------------------\n\n")
+		log.Printf("- Name: %s:", job.Name)
+		log.Printf("    Expression: %s", job.Expression)
+		log.Printf("    Command: %s", job.Command)
+		if c.UptimeKuma.Enabled {
+			log.Printf("    Push token: %s", job.PushToken)
+		}
 	}
 }
 

@@ -18,10 +18,15 @@ func main() {
 		log.Fatal("Error: --config flag is required. Please specify the path to your configuration file.")
 	}
 
-	c := cron.New(cron.WithSeconds())
-
 	config.Init(*configPath)
 	cfg := config.GetConfig()
+
+	var c *cron.Cron = nil
+	if cfg.Cron.Format == config.FormatQuartz {
+		c = cron.New(cron.WithSeconds())
+	} else {
+		c = cron.New()
+	}
 
 	// create logs dir
 	log.Printf("Creating logs directory '%s'", cfg.Logs.Dir)
