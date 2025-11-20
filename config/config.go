@@ -30,6 +30,7 @@ type LogsConfig struct {
 type Job struct {
 	Name       string
 	Expression string
+	Workdir    string
 	Command    string
 	PushToken  string
 }
@@ -131,6 +132,7 @@ func Init(configPath string) {
 	for _, job := range c.Jobs {
 		log.Printf("- Name: %s:", job.Name)
 		log.Printf("    Expression: %s", job.Expression)
+		log.Printf("    Workdir: %s", job.Workdir)
 		log.Printf("    Command: %s", job.Command)
 		if c.UptimeKuma.Enabled {
 			log.Printf("    Push token: %s", job.PushToken)

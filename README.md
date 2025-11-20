@@ -61,6 +61,7 @@ chmod +x /usr/local/bin/cron-kuma-pusher
    jobs:
      - name: example job
        expression: "0 * * * * *" # every minute in quartz format
+       workDir: "/home/me"
        command: "du -h"
        pushToken: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
    ```
@@ -75,6 +76,7 @@ chmod +x /usr/local/bin/cron-kuma-pusher
    - `jobs`: Array of job definitions. Each job requires:
      - `name`: A descriptive name for the job.
      - `expression`: Cron schedule expression.
+     - `workDir`: The directory in which to execute the command.
      - `command`: The shell command to execute.
      - `pushToken`: Your Kuma push token for this specific job.
 

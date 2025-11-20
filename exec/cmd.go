@@ -6,9 +6,14 @@ import (
 )
 
 // execCmd runs a shell command and returns its stdout, stderr, and exit code.
-func Exec(command string) (string, string, int, error) {
+func Exec(workdir, command string) (string, string, int, error) {
 	// Use 'bash -c' to allow complex shell syntax like pipes, redirects, etc.
 	cmd := exec.Command("bash", "-c", command)
+
+	// Set working directory if provided
+	if workdir != "" {
+		cmd.Dir = workdir
+	}
 
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout

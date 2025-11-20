@@ -30,10 +30,13 @@ func CreateJob(c *cron.Cron, job *config.Job) {
 	log.Printf("Creating job '%s'", job.Name)
 
 	_, err := c.AddFunc(job.Expression, func() {
-		stdout, stderr, exitCode, err := exec.Exec(job.Command)
+		stdout, stderr, exitCode, err := exec.Exec(job.Workdir, job.Command)
 
 		if err != nil {
 			log.Printf("Error: failed to run command: %v\n", err)
+			if config.Logs.Enabled {
+				utils.AppendLog(job.Name, stdout, stderr, exitCode)
+			}
 			if config.UptimeKuma.Enabled {
 				pushResultToKuma(job.PushToken, "Error: failed to run command", -1)
 			}
