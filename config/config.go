@@ -32,6 +32,8 @@ type Job struct {
 	Expression string
 	Workdir    string
 	Command    string
+	Env        map[string]string
+	EnvFile    string
 	PushToken  string
 }
 
@@ -133,6 +135,12 @@ func Init(configPath string) {
 		log.Printf("- Name: %s:", job.Name)
 		log.Printf("    Expression: %s", job.Expression)
 		log.Printf("    Workdir: %s", job.Workdir)
+		// if len(job.Env) > 0 {
+		// 	log.Printf("    Env: %v", job.Env)
+		// }
+		if job.EnvFile != "" {
+			log.Printf("    envFile: %s", job.EnvFile)
+		}
 		log.Printf("    Command: %s", job.Command)
 		if c.UptimeKuma.Enabled {
 			log.Printf("    Push token: %s", job.PushToken)
