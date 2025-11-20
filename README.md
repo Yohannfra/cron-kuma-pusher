@@ -37,6 +37,7 @@ chmod +x /usr/local/bin/cron-kuma-pusher
 ## Usage
 
 1. **Create a Push Monitor in Uptime Kuma**
+
    - Go to your Uptime Kuma dashboard.
    - Click **Add New Monitor** → choose **Push**.
    - Copy the **Url** and the **Push Token** (the part after `/push/`).
@@ -46,13 +47,16 @@ chmod +x /usr/local/bin/cron-kuma-pusher
    Save the following as `config.yml`:
 
    ```yaml
+   cron:
+     format: "quartz"
+
    uptimeKuma:
      enabled: true
-     baseUrl: 'https://uptime.yourdomain.com/api/push/'
+     baseUrl: "https://uptime.yourdomain.com/api/push/"
 
    logs:
      enabled: true
-     dir: './logs'
+     dir: "./logs"
 
    jobs:
      - name: example job
@@ -61,16 +65,25 @@ chmod +x /usr/local/bin/cron-kuma-pusher
        pushToken: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
    ```
 
-   - `kumaBaseUrl`: your Uptime Kuma API base URL (ends with `/api/push/`).
-   - `expression`: cron schedule (standard syntax).
-   - `command`: the command to execute.
-   - `pushToken`: your Kuma push token.
+   **Configuration Options:**
+
+   - `cron.format`: Cron expression format to use (`quartz` or `standard`).
+   - `uptimeKuma.enabled`: Enable/disable Uptime Kuma push notifications.
+   - `uptimeKuma.baseUrl`: Your Uptime Kuma API base URL (ends with `/api/push/`).
+   - `logs.enabled`: Enable/disable logging of job execution output.
+   - `logs.dir`: Directory where log files will be stored.
+   - `jobs`: Array of job definitions. Each job requires:
+     - `name`: A descriptive name for the job.
+     - `expression`: Cron schedule expression.
+     - `command`: The shell command to execute.
+     - `pushToken`: Your Kuma push token for this specific job.
 
 3. **Run the program**
 
    ```bash
    cron-kuma-pusher --config config.yml
    ```
+
 ---
 
 ## Running as a Systemd Service (Linux)
