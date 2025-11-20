@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/robfig/cron/v3"
-	"github.com/yohannfra/cron-kuma-pusher/exec"
 	"github.com/yohannfra/cron-kuma-pusher/config"
+	"github.com/yohannfra/cron-kuma-pusher/exec"
 	"github.com/yohannfra/cron-kuma-pusher/utils"
 )
 
@@ -34,7 +34,10 @@ func CreateJob(c *cron.Cron, job *config.Job) {
 		if err != nil {
 			log.Printf("Error: failed to run command: %v\n", err)
 			pushResultToKuma(job.PushToken, "Error: failed to run command", -1)
+			return
 		}
+
+		utils.AppendLog(job.Name, stdout, stderr, exitCode)
 
 		if exitCode == 0 {
 			log.Printf("Job '%s' ran successfully", job.Name)

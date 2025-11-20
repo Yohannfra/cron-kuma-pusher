@@ -16,6 +16,7 @@ type Job struct {
 type Configuration struct {
 	Jobs        []Job
 	KumaBaseUrl string
+	LogsDir     string
 }
 
 var c *Configuration
@@ -26,9 +27,14 @@ func validateConfig(c *Configuration) {
 		log.Fatalf("Error: No jobs found in configuration")
 	}
 
-	// Check if the DiscordWebhookUrl is present and valid
+	// Check if the KumaBaseUrl is present and valid
 	if c.KumaBaseUrl == "" {
 		log.Fatal("Error: KumaBaseUrl is not set.")
+	}
+
+	// Check if the LogsDir is present and set it's default value if not
+	if c.LogsDir == "" {
+		c.LogsDir = "./cron-kuma-pusher-logs"
 	}
 }
 
@@ -56,6 +62,7 @@ func Init(configPath string) {
 	validateConfig(c)
 
 	log.Printf("Uptime Kuma base url is %s", c.KumaBaseUrl)
+	log.Printf("Logs dir is %s", c.LogsDir)
 	log.Printf("Loaded %d jobs from configuration", len(c.Jobs))
 	for _, job := range c.Jobs {
 		log.Println("--------------------------------")

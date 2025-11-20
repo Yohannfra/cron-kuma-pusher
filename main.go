@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"log"
+	"os"
 
 	"github.com/robfig/cron/v3"
 	"github.com/yohannfra/cron-kuma-pusher/config"
@@ -21,6 +22,12 @@ func main() {
 
 	config.Init(*configPath)
 	cfg := config.GetConfig()
+
+	// create logs dir
+	err := os.MkdirAll(cfg.LogsDir, os.ModePerm)
+	if err != nil {
+		log.Fatalf("Failed to create logs dir: '%s'", cfg.LogsDir)
+	}
 
 	for _, j := range cfg.Jobs {
 		job.CreateJob(c, &j)
