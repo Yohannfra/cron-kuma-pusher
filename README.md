@@ -24,10 +24,10 @@ Download the latest binary from the [GitHub Releases](https://github.com/Yohannf
 # darwin-amd64 and windows-amd64 are also available on the release page
 
 # linux-amd64
-curl -L https://github.com/Yohannfra/cron-kuma-pusher/releases/download/v0.0.3/cron-kuma-pusher-linux-amd64 -o /usr/local/bin/cron-kuma-pusher
+curl -L https://github.com/Yohannfra/cron-kuma-pusher/releases/download/v0.0.10/cron-kuma-pusher-linux-amd64 -o /usr/local/bin/cron-kuma-pusher
 
 # darwin-arm64
-curl -L https://github.com/Yohannfra/cron-kuma-pusher/releases/download/v0.0.3/cron-kuma-pusher-darwin-arm64 -o /usr/local/bin/cron-kuma-pusher
+curl -L https://github.com/Yohannfra/cron-kuma-pusher/releases/download/v0.0.10/cron-kuma-pusher-darwin-arm64 -o /usr/local/bin/cron-kuma-pusher
 
 chmod +x /usr/local/bin/cron-kuma-pusher
 ```

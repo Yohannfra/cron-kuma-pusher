@@ -81,6 +81,6 @@ func CreateJob(c *cron.Cron, job *config.Job) {
 	})
 
 	if err != nil {
-		log.Fatalf("Failed to create job '%s'", job.Name)
+		log.Fatalf("Failed to create job '%s' %v", job.Name, err.Error())
 	}
 }
