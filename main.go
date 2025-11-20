@@ -24,9 +24,10 @@ func main() {
 	cfg := config.GetConfig()
 
 	// create logs dir
-	err := os.MkdirAll(cfg.LogsDir, os.ModePerm)
+	log.Printf("Creating logs directory '%s'", cfg.Logs.Dir)
+	err := os.MkdirAll(cfg.Logs.Dir, os.ModePerm)
 	if err != nil {
-		log.Fatalf("Failed to create logs dir: '%s'", cfg.LogsDir)
+		log.Fatalf("Failed to create logs dir: '%s'", cfg.Logs.Dir)
 	}
 
 	for _, j := range cfg.Jobs {

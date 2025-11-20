@@ -25,6 +25,7 @@ func pushResultToKuma(pushToken, message string, exitCode int) {
 }
 
 func CreateJob(c *cron.Cron, job *config.Job) {
+	config := config.GetConfig()
 
 	log.Printf("Creating job '%s'", job.Name)
 
@@ -37,7 +38,9 @@ func CreateJob(c *cron.Cron, job *config.Job) {
 			return
 		}
 
-		utils.AppendLog(job.Name, stdout, stderr, exitCode)
+		if config.Logs.Enabled {
+			utils.AppendLog(job.Name, stdout, stderr, exitCode)
+		}
 
 		if exitCode == 0 {
 			log.Printf("Job '%s' ran successfully", job.Name)

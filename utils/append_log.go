@@ -13,7 +13,7 @@ import (
 func AppendLog(fp, stdout, stderr string, exitCode int) error {
 	cfg := config.GetConfig()
 
-	f, err := os.OpenFile(path.Join(cfg.LogsDir, fp+".log"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(path.Join(cfg.Logs.Dir, fp+".log"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Printf("error opening file: %v", err)
 	}

@@ -48,6 +48,10 @@ chmod +x /usr/local/bin/cron-kuma-pusher
    ```yaml
    kumaBaseUrl: 'https://uptime.yourdomain.com/api/push/'
 
+   logs:
+     enabled: true
+     dir: './logs'
+
    jobs:
      - name: example job
        expression: "0 * * * * *" # every minute
