@@ -6,7 +6,7 @@ import (
 )
 
 // execCmd runs a shell command and returns its stdout, stderr, and exit code.
-func Exec(workdir string, env map[string]string, command string) (string, string, int, error) {
+func Exec(workdir string, env []map[string]string, command string) (string, string, int, error) {
 	// Use 'bash -c' to allow complex shell syntax like pipes, redirects, etc.
 	cmd := exec.Command("bash", "-c", command)
 
@@ -19,8 +19,10 @@ func Exec(workdir string, env map[string]string, command string) (string, string
 	if len(env) > 0 {
 		cmd.Env = append([]string{}, cmd.Environ()...)
 
-		for k, v := range env {
-			cmd.Env = append(cmd.Env, k+"="+v)
+		for _, e := range env {
+			for k, v := range e {
+				cmd.Env = append(cmd.Env, k+"="+v)
+			}
 		}
 	}
 

@@ -36,10 +36,10 @@ func CreateJob(c *cron.Cron, job *config.Job) {
 			log.Fatalf("Failed to load env file for job '%s'", job.Name)
 		}
 
-		log.Printf("Loaded env file %s: %v", job.EnvFile, loadedEnv)
+		// log.Printf("Loaded env file %s: %v", job.EnvFile, loadedEnv)
 
-		job.Env = utils.MergeMaps(job.Env, loadedEnv)
-		log.Printf("Merged env for job %s: %v", job.Name, job.Env)
+		job.Env = append(job.Env, loadedEnv)
+		// log.Printf("Merged env for job %s: %v", job.Name, job.Env)
 	}
 
 	log.Printf("Creating job '%s'", job.Name)
