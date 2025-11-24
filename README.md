@@ -24,10 +24,10 @@ Download the latest binary from the [GitHub Releases](https://github.com/Yohannf
 # darwin-amd64 and windows-amd64 are also available on the release page
 
 # linux-amd64
-curl -L https://github.com/Yohannfra/cron-kuma-pusher/releases/download/v0.0.10/cron-kuma-pusher-linux-amd64 -o /usr/local/bin/cron-kuma-pusher
+curl -L https://github.com/Yohannfra/cron-kuma-pusher/releases/download/v0.0.12/cron-kuma-pusher-linux-amd64 -o /usr/local/bin/cron-kuma-pusher
 
 # darwin-arm64
-curl -L https://github.com/Yohannfra/cron-kuma-pusher/releases/download/v0.0.10/cron-kuma-pusher-darwin-arm64 -o /usr/local/bin/cron-kuma-pusher
+curl -L https://github.com/Yohannfra/cron-kuma-pusher/releases/download/v0.0.12/cron-kuma-pusher-darwin-arm64 -o /usr/local/bin/cron-kuma-pusher
 
 chmod +x /usr/local/bin/cron-kuma-pusher
 ```
@@ -62,6 +62,9 @@ chmod +x /usr/local/bin/cron-kuma-pusher
      - name: example job
        expression: "0 * * * * *" # every minute in quartz format
        workDir: "/home/me"
+       env:
+        - POSTGRES_PASSWORD: "foo"
+        - POSTGRES_PASSWORD2: "bar"
        envFile: ".env"
        command: "du -h"
        pushToken: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -78,6 +81,7 @@ chmod +x /usr/local/bin/cron-kuma-pusher
      - `name`: A descriptive name for the job.
      - `expression`: Cron schedule expression.
      - `workDir`: The directory in which to execute the command.
+     - `env`: Env variables to add to process.
      - `envFile`: Env variables to add to process (load them from a dotenv compatible file).
      - `command`: The shell command to execute.
      - `pushToken`: Your Kuma push token for this specific job.
