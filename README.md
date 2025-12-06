@@ -67,6 +67,7 @@ chmod +x /usr/local/bin/cron-kuma-pusher
         - POSTGRES_PASSWORD2: "bar"
        envFile: ".env"
        command: "du -h"
+       timeout: 60
        pushToken: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
    ```
 
@@ -84,6 +85,7 @@ chmod +x /usr/local/bin/cron-kuma-pusher
      - `env`: Env variables to add to process.
      - `envFile`: Env variables to add to process (load them from a dotenv compatible file).
      - `command`: The shell command to execute.
+     - `timeout`: Maximum execution time in seconds (optional, 0 or omitted means no timeout).
      - `pushToken`: Your Kuma push token for this specific job.
 
 3. **Run the program**

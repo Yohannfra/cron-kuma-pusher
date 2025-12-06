@@ -3,6 +3,7 @@ package job
 import (
 	"log"
 	"net/http"
+	"net/url"
 
 	"github.com/joho/godotenv"
 	"github.com/robfig/cron/v3"
@@ -17,7 +18,7 @@ func pushResultToKuma(pushToken, message string, exitCode int) {
 	// "<KumaBaseUrl>/<token>?status=up&msg=OK"
 	pushUrl := config.UptimeKuma.BaseUrl + "/" + pushToken + "?" +
 		"status=" + utils.Ternary(exitCode == 0, "up", "down") +
-		"&msg=" + message
+		"&msg=" + url.QueryEscape(message)
 
 	_, err := http.Get(pushUrl)
 	if err != nil {
@@ -45,7 +46,7 @@ func CreateJob(c *cron.Cron, job *config.Job) {
 	log.Printf("Creating job '%s'", job.Name)
 
 	_, err := c.AddFunc(job.Expression, func() {
-		stdout, stderr, exitCode, err := exec.Exec(job.Workdir, job.Env, job.Command)
+		stdout, stderr, exitCode, err := exec.Exec(job.Workdir, job.Env, job.Command, job.Timeout)
 
 		if err != nil {
 			log.Printf("Error: failed to run command: %v\n", err)

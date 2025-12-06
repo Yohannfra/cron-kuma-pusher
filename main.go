@@ -21,7 +21,7 @@ func main() {
 	config.Init(*configPath)
 	cfg := config.GetConfig()
 
-	var c *cron.Cron = nil
+	var c *cron.Cron
 	if cfg.Cron.Format == config.FormatQuartz {
 		c = cron.New(cron.WithSeconds())
 	} else {
@@ -29,10 +29,12 @@ func main() {
 	}
 
 	// create logs dir
-	log.Printf("Creating logs directory '%s'", cfg.Logs.Dir)
-	err := os.MkdirAll(cfg.Logs.Dir, os.ModePerm)
-	if err != nil {
-		log.Fatalf("Failed to create logs dir: '%s'", cfg.Logs.Dir)
+	if cfg.Logs.Enabled {
+		log.Printf("Creating logs directory '%s'", cfg.Logs.Dir)
+		err := os.MkdirAll(cfg.Logs.Dir, os.ModePerm)
+		if err != nil {
+			log.Fatalf("Failed to create logs dir: '%s'", cfg.Logs.Dir)
+		}
 	}
 
 	for _, j := range cfg.Jobs {

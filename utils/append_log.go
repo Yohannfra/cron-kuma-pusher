@@ -16,8 +16,8 @@ func AppendLog(fp, stdout, stderr string, exitCode int) {
 	f, err := os.OpenFile(path.Join(cfg.Logs.Dir, fp+".log"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Printf("error opening file: %v", err)
+		return
 	}
-
 	defer func() {
 		if err := f.Close(); err != nil {
 			log.Printf("error closing file: %v", err)
