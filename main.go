@@ -21,7 +21,7 @@ func main() {
 	config.Init(*configPath)
 	cfg := config.GetConfig()
 
-	var c *cron.Cron = nil
+	var c *cron.Cron
 	if cfg.Cron.Format == config.FormatQuartz {
 		c = cron.New(cron.WithSeconds())
 	} else {
