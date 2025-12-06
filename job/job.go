@@ -46,7 +46,7 @@ func CreateJob(c *cron.Cron, job *config.Job) {
 	log.Printf("Creating job '%s'", job.Name)
 
 	_, err := c.AddFunc(job.Expression, func() {
-		stdout, stderr, exitCode, err := exec.Exec(job.Workdir, job.Env, job.Command)
+		stdout, stderr, exitCode, err := exec.Exec(job.Workdir, job.Env, job.Command, job.Timeout)
 
 		if err != nil {
 			log.Printf("Error: failed to run command: %v\n", err)

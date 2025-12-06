@@ -36,6 +36,7 @@ type Job struct {
 	Env        []map[string]string
 	EnvFile    string `yaml:"envFile"`
 	PushToken  string `yaml:"pushToken"`
+	Timeout    int    // timeout in seconds, 0 means no timeout
 }
 
 type Configuration struct {
@@ -127,6 +128,9 @@ func Init(configPath string) {
 		log.Printf("- Name: %s:", job.Name)
 		log.Printf("    Expression: %s", job.Expression)
 		log.Printf("    Workdir: %s", job.Workdir)
+		if job.Timeout > 0 {
+			log.Printf("    Timeout: %ds", job.Timeout)
+		}
 		if len(job.Env) > 0 {
 			log.Println("    Env:")
 			for _, e := range job.Env {

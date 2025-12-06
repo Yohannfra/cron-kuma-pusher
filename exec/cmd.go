@@ -2,13 +2,26 @@ package exec
 
 import (
 	"bytes"
+	"context"
 	"os/exec"
+	"time"
 )
 
-// execCmd runs a shell command and returns its stdout, stderr, and exit code.
-func Exec(workdir string, env []map[string]string, command string) (string, string, int, error) {
+// Exec runs a shell command and returns its stdout, stderr, and exit code.
+// If timeoutSeconds > 0, the command will be killed after the specified duration.
+func Exec(workdir string, env []map[string]string, command string, timeoutSeconds int) (string, string, int, error) {
+	var ctx context.Context
+	var cancel context.CancelFunc
+
+	if timeoutSeconds > 0 {
+		ctx, cancel = context.WithTimeout(context.Background(), time.Duration(timeoutSeconds)*time.Second)
+	} else {
+		ctx, cancel = context.WithCancel(context.Background())
+	}
+	defer cancel()
+
 	// Use 'bash -c' to allow complex shell syntax like pipes, redirects, etc.
-	cmd := exec.Command("bash", "-c", command)
+	cmd := exec.CommandContext(ctx, "bash", "-c", command)
 
 	// Set working directory if provided
 	if workdir != "" {
