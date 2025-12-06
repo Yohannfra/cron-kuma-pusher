@@ -18,7 +18,11 @@ func AppendLog(fp, stdout, stderr string, exitCode int) {
 		log.Printf("error opening file: %v", err)
 		return
 	}
-	defer f.Close()
+	defer func() {
+		if err := f.Close(); err != nil {
+			log.Printf("error closing file: %v", err)
+		}
+	}()
 
 	timestamp := time.Now().Format("2006-01-02 15:04:05")
 
